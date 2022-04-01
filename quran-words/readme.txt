@@ -12,33 +12,47 @@ HTML:
 
 SCSS:
 .ayeLine {
-i{
-  font-weight: 400;
-  font-style: normal;
-  display: inline-block;
+  cursor: default;
+  position: relative;
   transition: .3s;
-  border-bottom: 1px solid transparent;
-  opacity: 1;
-  line-height: 49px;
-  height: 50px;
-  font-size: 45px;
-  padding-left: 1px;
-  outline: none;
-  cursor: pointer;
+  padding: 4px 0;
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  color: #000;
+  min-height: 60px;
+
+  &:last-of-type {
+    margin-bottom: 5px;
+  }
+
+  &:first-of-type {
+    margin-top: 10px;
+  }
 
   @media(max-width: 768px){
-    font-size: 23px;
-    line-height: 29px;
-    height: 30px;
+    min-height: 40px;
   }
 
-&.active, &.hover{
-    color: var(--ion-color-primary);
-    cursor: pointer;
-  }
+  i{
+    font-style: normal;
+    line-height: 49px;
+    height: 50px;
+    font-size: 45px;
+    padding-left: 1px;
 
-  &:hover {
-    color: var(--ion-color-primary);
+    @media(max-width: 768px){
+      font-size: 23px;
+      line-height: 29px;
+      height: 30px;
+    }
+
+  &.active, &.hover{
+      color: var(--ion-color-primary);
+      cursor: pointer;
+    }
+
+    &:hover {
+      color: var(--ion-color-primary);
+    }
   }
-}
 }
