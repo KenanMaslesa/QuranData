@@ -2,6 +2,7 @@
    pages = quran.words.json
 
 HTML:
+MINIMAL:
       <div *ngFor="let page of pages; let pageIndex = index">
         <div dir="rtl" lang="ar">
           <div class="ayeLine" *ngFor="let ayah of page;">
@@ -9,53 +10,48 @@ HTML:
           </div>
         </div>
       </div>
+      
+FULL:
+ <ion-slides #slider (ionSlideNextStart)="loadNext()" (ionSlidePrevStart)="loadPrev()" [options]="slideOpts">
+      <ion-slide class="page" [class.audioPlaying]="mediaPlayerService.player" *ngFor="let page of quranWordsForCurrentPage; let pageIndex = index">
+    <div>
+    <div class="ayeLine" *ngFor="let ayah of page.words; let ayahNumber = index">
+
+      <!--sura title-->
+      <ng-container *ngIf="ayah.suraName">
+        <section class="suraTitle" *ngIf="ayah.suraName">
+          <img src="assets/img/surah_title.gif" alt="Quran sura title">
+          <h3>{{ayah.suraName}}</h3>
+        </section>
+
+        <section class="bismillah" *ngIf="quranService.currentPage !== 187">
+          <!-- *ngIf="quranService.currentPage !== 187" because of sura Tevba-->
+
+          <div>﷽</div>
+          <h4 class="ayeSimple">بسم الله الرحمن الرحیم</h4>
+        </section>
+      </ng-container>
+      <!--sura title end-->
+      <ng-container *ngFor="let word of ayah.words;">
+        <!-- playAyat-->
+        <i class="p{{quranService.currentPage}} ayah{{word.index}} endAyah" *ngIf="word.charType === 'end'"
+          (click)="playAyah(word.index);" [innerHtml]="word.code"></i>
+        <!-- playAyat -->
+
+        <!-- word - playWord-->
+        <i [class.active]="mediaPlayerService.playingCurrentAyah === word.index" class="p{{quranService.currentPage}} ayah{{word.index}}" *ngIf="word.charType !== 'end'"
+          (click)="playWord(word.audio)" [innerHtml]="word.code"></i>
+        <!--word - playWord-->
+
+      </ng-container>
+    </div>
+  </div>
+  </ion-slide>
+
+    </ion-slides>
 
 SCSS:
-.ayeLine {
-  cursor: default;
-  position: relative;
-  transition: .3s;
-  padding: 4px 0;
-  border: 1px solid transparent;
-  border-radius: .25rem;
-  color: #000;
-  min-height: 60px;
 
-  &:last-of-type {
-    margin-bottom: 5px;
-  }
-
-  &:first-of-type {
-    margin-top: 10px;
-  }
-
-  @media(max-width: 768px){
-    min-height: 40px;
-  }
-
-  i{
-    font-style: normal;
-    line-height: 49px;
-    height: 50px;
-    font-size: 45px;
-    padding-left: 1px;
-
-    @media(max-width: 768px){
-      font-size: 23px;
-      line-height: 29px;
-      height: 30px;
-    }
-
-  &.active, &.hover{
-      color: var(--ion-color-primary);
-      cursor: pointer;
-    }
-
-    &:hover {
-      color: var(--ion-color-primary);
-    }
-  }
-}
 
 @font-face {
   font-display: block;
@@ -6110,3 +6106,87 @@ SCSS:
 .p604 {
   font-family: p604
 }
+
+ion-slides {
+  direction: rtl;
+
+  ion-slide {
+    min-height: 85vh;
+    width: 100% !important;
+
+    &:nth-child(1) {
+      opacity: 0;
+    }
+    &:nth-child(3) {
+      opacity: 0;
+    }
+
+    &.page {
+      width: 100%;
+      overflow: auto;
+
+      &.audioPlaying {
+        padding-bottom: 50px;
+      }
+
+      .ayeLine {
+        cursor: default;
+        position: relative;
+        transition: 0.3s;
+        padding: 4px 0;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+        color: #000;
+        min-height: 60px;
+
+        &:last-of-type {
+          margin-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+          min-height: 40px;
+        }
+
+        i {
+          font-style: normal;
+          line-height: 49px;
+          height: 50px;
+          font-size: 45px; //fallback
+          font-size: 5vw;
+          padding-left: 1px;
+
+          &.endAyah {
+            color: var(--ion-color-primary);
+          }
+
+          @media (max-width: 768px) {
+            font-size: 23px; //fallback
+            font-size: 6vw;
+            line-height: 29px;
+            height: 30px;
+          }
+
+          &.active,
+          &.hover {
+            color: var(--ion-color-primary);
+            cursor: pointer;
+          }
+
+          &:hover {
+            color: var(--ion-color-primary);
+          }
+        }
+      }
+    }
+
+    .suraTitle {
+      position: relative;
+      overflow: hidden;
+      //background-color: #f4f5f6;
+      padding: 10px;
+      margin-top: 5px;
+    }
+  }
+}
+}
+
